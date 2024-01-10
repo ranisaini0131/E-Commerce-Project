@@ -2,7 +2,18 @@ import mongoose from "mongoose";
 
 
 const userSchema = new mongoose.Schema(
+
     {
+
+        fullName: {
+            type: String,
+            required: [true, 'Please provide name'],
+            lowerCase: true,
+            unique: true,
+            trim: true,
+
+        },
+
         userName: {
             type: String,
             required: [true, 'Please provide name'],
@@ -27,11 +38,24 @@ const userSchema = new mongoose.Schema(
             minlength: 6,
         },
 
+        avatar: {
+            type: String,
+            required: true
+        },
+
+        coverImage: {
+            type: String,
+        },
+
         role: {
             type: String,
             required: true,
             enum: ['user', 'admin'],
             default: 'user'
+        },
+
+        refreshToken: {
+            type: String
         }
     },
     {
