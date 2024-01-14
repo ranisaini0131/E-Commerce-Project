@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
 
 
 const userSchema = new mongoose.Schema(
@@ -14,7 +16,7 @@ const userSchema = new mongoose.Schema(
 
         },
 
-        userName: {
+        username: {
             type: String,
             required: [true, 'Please provide name'],
             lowerCase: true,
@@ -64,52 +66,58 @@ const userSchema = new mongoose.Schema(
 )
 
 
-//password hashing
-userSchema.pre("save", async function (next) {
+// //hasing password right before save, (save is a event here)
+// userSchema.pre("save", async function (next) {
 
-    //encrypt only on password modified
-    if (this.isModified("password")) return next();
-
-    //password encrypted
-    this.password = bcrypt.hash(this.password, 10)
-
-})
-
-//checking Password
-userSchema.methods.isPasswordCorrect = async function (password) {
-    return await bcrypt.compare(password, this.password)
-}
+//     //encrypted only on password modified
+//     // if (!this.isModified("password")) return next();
 
 
-userSchema.methods.generateAccessToken = function () {
-    jwt.sign(
-        {
-            _id: this._id,
-            email: this.email,
-            userName: this.userName,
-            fullName: this.fullName
-        },
-        process.env.ACCESS_TOKEN_SECRET,
-        {
-            expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-        }
-    )
-}
+//     //password encrypted
+//     this.password = await bcrypt.hash(this.password, 10)
 
-userSchema.methods.generateRefreshToken = function () {
-    jwt.sign(
-        {
-            _id: this._id,
-            email: this.email,
-            userName: this.userName,
-            fullName: this.fullName
-        },
-        process.env.REFRESH_TOKEN_SECRET,
-        {
-            expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-        }
-    )
-}
+//     next()
+// })
+
+
+// //checking Password
+// userSchema.methods.isPasswordCorrect = async function (password) {
+//     return await bcrypt.compare(password, this.password)
+// }
+
+
+// userSchema.methods.generateAccessToken = function () {
+//     jwt.sign(
+//         {
+//             _id: this._id,
+//             email: this.email,
+//             userName: this.userName,
+//             fullName: this.fullName
+//         },
+//         process.env.ACCESS_TOKEN_SECRET,
+//         {
+//             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
+//         }
+//     )
+// }
+
+
+// userSchema.methods.generateRefreshToken = function () {
+//     jwt.sign(
+//         {
+//             _id: this._id,
+//             email: this.email,
+//             userName: this.userName,
+//             fullName: this.fullName
+//         },
+//         process.env.REFRESH_TOKEN_SECRET,
+//         {
+//             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
+//         }
+//     )
+
+//     console.log(process.env.REFRESH_TOKEN_SECRET, "119")
+// }
 
 
 
