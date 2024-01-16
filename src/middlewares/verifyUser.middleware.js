@@ -6,7 +6,6 @@ export const verifyJWT = async (req, res, next) => {
         const token = req.header
             ("Authorization")?.replace("Bearer ", "")
 
-
         if (!token) {
             res.status(402).json({
                 status: "failed",
@@ -18,9 +17,8 @@ export const verifyJWT = async (req, res, next) => {
 
         const decodedTokenInfo = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-
-        const user = await User.findById(decodedTokenInfo.user._id).select(
-            "-password -refreshToken"
+        const user = await User.findById(decodedTokenInfo._user._id).select(
+            " -refreshToken"
         )
 
 

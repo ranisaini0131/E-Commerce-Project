@@ -5,7 +5,6 @@ export const genrateAccessAndRefreshToken = async (userId) => {
 
     //get user access here
     const user = await User.findById(userId)
-    console.log(user, "7")
 
     //generate tokens
     const accessToken = user.generateAccessToken()

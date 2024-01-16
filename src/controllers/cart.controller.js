@@ -2,7 +2,11 @@ const addItemToCart = async (req, res) => {
 
 }
 
-const getCartFromItem = async (req, res) => {
+const getItemById = async (req, res) => {
+
+}
+
+const getAllCart = async (req, res) => {
 
 }
 

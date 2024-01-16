@@ -1,6 +1,4 @@
 import mongoose from "mongoose";
-import bcrypt from "bcrypt"
-import jwt from "jsonwebtoken"
 
 
 const userSchema = new mongoose.Schema(
@@ -58,66 +56,16 @@ const userSchema = new mongoose.Schema(
 
         refreshToken: {
             type: String
+        },
+
+        OTP: {
+            type: Number
         }
     },
     {
         timestamps: true
     }
 )
-
-
-// //hasing password right before save, (save is a event here)
-// userSchema.pre("save", async function (next) {
-
-//     //encrypted only on password modified
-//     // if (!this.isModified("password")) return next();
-
-
-//     //password encrypted
-//     this.password = await bcrypt.hash(this.password, 10)
-
-//     next()
-// })
-
-
-// //checking Password
-// userSchema.methods.isPasswordCorrect = async function (password) {
-//     return await bcrypt.compare(password, this.password)
-// }
-
-
-// userSchema.methods.generateAccessToken = function () {
-//     jwt.sign(
-//         {
-//             _id: this._id,
-//             email: this.email,
-//             userName: this.userName,
-//             fullName: this.fullName
-//         },
-//         process.env.ACCESS_TOKEN_SECRET,
-//         {
-//             expiresIn: process.env.ACCESS_TOKEN_EXPIRY
-//         }
-//     )
-// }
-
-
-// userSchema.methods.generateRefreshToken = function () {
-//     jwt.sign(
-//         {
-//             _id: this._id,
-//             email: this.email,
-//             userName: this.userName,
-//             fullName: this.fullName
-//         },
-//         process.env.REFRESH_TOKEN_SECRET,
-//         {
-//             expiresIn: process.env.REFRESH_TOKEN_EXPIRY
-//         }
-//     )
-
-//     console.log(process.env.REFRESH_TOKEN_SECRET, "119")
-// }
 
 
 

@@ -2,7 +2,7 @@ const createProduct = async (req, res) => {
 
 }
 
-const getSingleProduct = async (req, res) => {
+const getProductById = async (req, res) => {
 
 }
 
@@ -10,15 +10,15 @@ const getAllProducts = async (req, res) => {
 
 }
 
-const getProductById = async (req, res) => {
-
-}
 
 const updateProduct = async (req, res) => {
 
 }
 
-const deleteProduct = async (req, res) => {
+const deleteProductById = async (req, res) => {
+}
+
+const deleteProducts = async (req, res) => {
 
 }
 
@@ -34,6 +34,6 @@ export {
     getAllProducts,
     getProductById,
     updateProduct,
-    deleteProduct,
+    deleteProductById,
     uploadImageOfProduct
 }

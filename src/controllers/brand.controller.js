@@ -2,7 +2,11 @@ const createBrand = async (req, res) => {
 
 }
 
-const getBrand = async (req, res) => {
+const getBrandById = async (req, res) => {
+
+}
+
+const getAllBrands = async (req, res) => {
 
 }
 

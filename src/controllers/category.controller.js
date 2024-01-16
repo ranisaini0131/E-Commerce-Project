@@ -2,7 +2,11 @@ const createCategory = async (req, res) => {
 
 }
 
-const getCategory = async (req, res) => {
+const getCategoryById = async (req, res) => {
+
+}
+
+const getAllCategories = async (req, res) => {
 
 }
 
@@ -17,7 +21,8 @@ const deleteCategory = async (req, res) => {
 
 export {
     createCategory,
-    getCategory,
+    getCategoryById,
+    getAllCategories,
     updateCategory,
     deleteCategory
 }
