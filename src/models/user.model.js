@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema(
             type: String
         },
 
-        OTP: {
+        otp: {
             type: Number
         }
     },

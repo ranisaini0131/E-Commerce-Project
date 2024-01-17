@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js"
 import nodemailer from "nodemailer"
 
+
+
 const registerUser = async (req, res) => {
     try {
 
@@ -197,63 +199,62 @@ const logoutUser = async (req, res) => {
 const SendOTP = async (req, res) => {
     try {
         const { username, email } = req.body
-        console.log(username, email, "200")
 
         if (username || email) {
 
             //username, email exists or not
-            const existesUser = await User.findOne({
-                $or: [{ username }, { email }]
-            })
+            const existUser = await User.findOne({ username })
 
 
-
-            console.log(existesUser, "207")
-
-            if (existesUser) {
-
-                //otp generate krwa k mail pr behjni h
+            if (existUser) {
 
                 const generateOTP = () => {
                     return Math.floor(1000 + Math.random() * 9000).toString()
                 }
-                const otp = generateOTP()
-                console.log(otp)
-                existesUser.OTP = otp
+                existUser.otp = generateOTP()
+                const userOtp = existUser.otp
+                console.log(userOtp, "122")
 
-                //Nodemailer configuartion
-                const transporter = nodemailer.createTransport({
+                const user = await User.findOneAndUpdate({ username }, { userOtp }, { new: true })
+                console.log(user, "260")
+
+
+                //nodemailer config
+                let config = {
                     service: "gmail",
                     auth: {
-                        user: process.env.MAIL_USERNAME,
-                        pass: process.env.MAIL_PASSOWRD
+                        user: process.env.EMAIL,
+                        pass: process.env.PASSWORD
                     }
-                })
-
-                // console.log(existesUser.email)
-                //where to send the email with data
-                let mailOptions = {
-                    from: process.env.MAIL_USERNAME,
-                    to: "ranisaini414@gmail.com",
-                    subject: "OTP TO RESET PASSWORD",
-                    text: `Your OTP is: ${otp}`
                 }
 
-                //this method send email 
+                let transporter = nodemailer.createTransport(config)
+
+                let mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: "OTP TO RESET PASSWORD",
+                    text: `Your OTP is: ${userOtp}`
+                }
+
+
+                // /this method send email
                 transporter.sendMail(mailOptions, (error, info) => {
                     if (!error) {
                         res.status(200).json({
                             message: 'Email has been sent',
+                            info: info.messageId,
+                            preview: nodemailer.getTestMessageUrl(info)
                         })
-                        console.log(info.response)
+                        console.log(info.response, "258")
                     } else {
                         console.log('Error occurred', error);
                     }
                 })
-
                 return res.status(200).json({
                     status: "success",
                     message: "OTP send Successfully",
+                    user
                 })
 
             } else {
@@ -265,7 +266,8 @@ const SendOTP = async (req, res) => {
             }
 
 
-        } else {
+        }
+        else {
             return res.status(422).json({
                 status: "fail",
                 message: "Please provide username or email",
@@ -290,6 +292,25 @@ const verifyOTP = async (req, res) => {
     const { otp } = req.body
 
     const user = await User.findOne()
+
+    // try {
+
+    //     const user = await OTP.findOne({ email: req.body.email })
+    //     if (user.otp == req.body.otp) {
+    //         await OTP.findByIdAndUpdate(user._id, { otp: null })
+    //         res.send({
+    //             status: "success",
+    //             message: "verify OTP successfully"
+    //         })
+    //     } else {
+    //         res.send({
+    //             status: "failed",
+    //             message: "Wrong OTP"
+    //         })
+    //     }
+    // } catch (error) {
+    //     console.log(error)
+    // }
 }
 
 
