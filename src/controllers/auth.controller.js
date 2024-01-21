@@ -215,9 +215,7 @@ const SendOTP = async (req, res) => {
                 const userOtp = existUser.otp
                 console.log(userOtp, "122")
 
-                const user = await User.findOneAndUpdate({ username }, { userOtp }, { new: true })
-                console.log(user, "260")
-
+                const user = await User.findOneAndUpdate({ username }, { $set: { otp: userOtp } }, { new: true })
 
                 //nodemailer config
                 let config = {
@@ -228,7 +226,7 @@ const SendOTP = async (req, res) => {
                     }
                 }
 
-                let transporter = nodemailer.createTransport(config)
+                let transporter = nodemailer.createTransport(config);
 
                 let mailOptions = {
                     from: process.env.EMAIL,
@@ -254,7 +252,7 @@ const SendOTP = async (req, res) => {
                 return res.status(200).json({
                     status: "success",
                     message: "OTP send Successfully",
-                    user
+                    otp: user.userOtp
                 })
 
             } else {
@@ -289,28 +287,45 @@ const verifyOTP = async (req, res) => {
     //new password bn jaega to agar login krega  to nrew token apneaap generate ho hijaega
 
 
-    const { otp } = req.body
+    const { otp, new_password } = req.body
 
-    const user = await User.findOne()
+    const user = await User.findOne({ otp })
+    console.log(otp, "purana")
+    const password = user.password
 
-    // try {
+    try {
+        if (otp === user.otp) {
+            await User.findOneAndUpdate(
+                { otp },
+                {
+                    otp: null
+                },
+                {
+                    password: new_password
+                },
+                {
+                    new: true
+                }
+            )
+        }
 
-    //     const user = await OTP.findOne({ email: req.body.email })
-    //     if (user.otp == req.body.otp) {
-    //         await OTP.findByIdAndUpdate(user._id, { otp: null })
-    //         res.send({
-    //             status: "success",
-    //             message: "verify OTP successfully"
-    //         })
-    //     } else {
-    //         res.send({
-    //             status: "failed",
-    //             message: "Wrong OTP"
-    //         })
-    //     }
-    // } catch (error) {
-    //     console.log(error)
-    // }
+        console.log(user.otp, "new")
+        return res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "Passowrd changed successfully",
+            })
+
+
+    } catch (error) {
+        return res
+            .status(200)
+            .json({
+                status: 'failed',
+                message: error.message
+            })
+    }
 }
 
 
@@ -354,8 +369,6 @@ const changePassword = async (req, res) => {
     }
 
 }
-
-
 
 
 

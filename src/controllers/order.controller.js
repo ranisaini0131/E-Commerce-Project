@@ -1,38 +1,88 @@
-const createOrder = async (req, res) => {
-    // try {
-    //     const order = new Order(req.body)
-    //     await order.save()
-    //     res.send({
-    //         status: "success",
-    //         message: order
-    //     })
+import { Order } from "../models/order.model.js"
+// import { User } from "../models/user.model.js"
+// import { Product } from "../models/product.model.js"
 
-    // } catch (error) {
-    //     console.log(error)
-    // }
+const createOrder = async (req, res) => {
+    try {
+
+        const { user, orderItem, totalAmount } = req.body
+
+        if (!(user || orderItem || totalAmount)) {
+            return res
+                .status(500)
+                .json({
+                    status: "failed",
+                    message: "provide all required details."
+                })
+        }
+
+        const existedOrder = await Order.findOne({ user }).populate("User").populate("Product")
+
+        if (existedOrder) {
+            return res
+                .status(500)
+                .json({
+                    status: "failed",
+                    message: "Order already Created"
+                })
+        }
+
+        const newOrder = new Order({
+            user,
+            orderItem,
+            totalAmount
+        })
+
+        await newOrder.save()
+
+        return res
+            .status(200)
+            .json({
+                status: "success",
+                message: "Order Created successfully",
+                data: newOrder
+            })
+
+    } catch (error) {
+        console.log(error)
+        return res
+            .status(500)
+            .json({
+                status: "failed",
+                message: error.message
+            })
+    }
 }
 
 
 const getOrderById = async (req, res) => {
-    // const { user } = req.query
-    // try {
-    //     const orderedItems = await Order.find({ user: user }).populate('User').populate('Product');
-    //     res.send({
-    //         status: "success",
-    //         message: orderedItems
-    //     })
+    try {
+        const { user } = req.query
+        const orderedItems = await Order.find({ user: user }).populate('User').populate('Product');
+        res.send({
+            status: "success",
+            message: orderedItems
+        })
 
-    // } catch (error) {
-    //     console.log(error)
-    //     res.send({
-    //         status: "failed",
-    //         message: error.message
-    //     })
-    // }
+    } catch (error) {
+        console.log(error)
+        res.send({
+            status: "failed",
+            message: error.message
+        })
+    }
 }
 
 
 const getAllOrders = async (req, res) => {
+
+}
+
+const CancelOrder = async (req, res) => {
+
+}
+
+const updateOrder = async (req, res) => {
 
 }
 
@@ -87,5 +137,5 @@ export {
     getOrderById,
     getAllOrders,
     updateOrder,
-    deleteOrder
+    CancelOrder
 }

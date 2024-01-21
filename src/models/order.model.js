@@ -36,6 +36,7 @@ const orderSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
+
         orderItems: [OrderItems],
 
         totalAmount: {
@@ -43,24 +44,24 @@ const orderSchema = new mongoose.Schema(
             required: true
         },
 
-        address: {
-            state: {
-                type: String,
-                required: true
-            },
-            city: {
-                type: String,
-                required: true
-            },
-            street: {
-                type: String,
-                required: true
-            },
-            pinCode: {
-                type: Number,
-                required: true
-            }
-        },
+        // address: {
+        //     state: {
+        //         type: String,
+        //         required: true
+        //     },
+        //     city: {
+        //         type: String,
+        //         required: true
+        //     },
+        //     street: {
+        //         type: String,
+        //         required: true
+        //     },
+        //     pinCode: {
+        //         type: Number,
+        //         required: true
+        //     }
+        // },
 
         status: {
             type: String,
