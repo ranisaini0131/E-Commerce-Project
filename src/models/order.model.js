@@ -9,7 +9,7 @@ const OrderItems = mongoose.Schema(
         },
         description: {
             type: String,
-            required: true
+            // required: true
         },
         price: {
             type: Number,
@@ -41,7 +41,7 @@ const orderSchema = new mongoose.Schema(
 
         totalAmount: {
             type: Number,
-            required: true
+            // required: true
         },
 
         // address: {

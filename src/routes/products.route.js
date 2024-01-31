@@ -1,13 +1,15 @@
 import { Router } from "express"
-import { createProduct, deleteProductById, getAllProducts, getProductById, updateProduct } from "../controllers/product.controller.js"
+import { isAdmin } from "../middlewares/isAdmin.middleware.js"
+import { createProduct, deleteProductById, getAllProducts, getProductById, updateProduct, filteredProducts } from "../controllers/product.controller.js"
 
 const router = Router()
 
 router.post("/createProduct", createProduct)
-router.get("/getProductById/:id", getProductById)
-router.get("/getAllProducts", getAllProducts)
-router.patch("/updatedProduct", updateProduct)
-router.delete("/deleteProduct/:id", deleteProductById)
+router.get("/getProductById/:id", isAdmin, getProductById)
+router.get("/getAllProducts/:id", isAdmin, getAllProducts)
+router.get("/filteredProduct/:key", isAdmin, filteredProducts)
+router.patch("/updatedProduct", isAdmin, updateProduct)
+router.delete("/deleteProduct/:id", isAdmin, deleteProductById)
 
 
 

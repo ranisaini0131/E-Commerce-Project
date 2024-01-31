@@ -9,10 +9,10 @@ const registerUser = async (req, res) => {
     try {
 
         //get user details from frontend
-        const { fullName, username, email, password } = req.body
+        const { fullName, username, email, password, role } = req.body
 
         //validation
-        if (!(fullName || username || email || password)) {
+        if (!(fullName || username || email || password || role)) {
             return res.status(400).json({
                 status: "failed",
                 message: "Please provide all fields",
@@ -48,7 +48,8 @@ const registerUser = async (req, res) => {
             email,
             password: hashedPassword,
             avatar: avatarPath,
-            coverImage: coverImagePath
+            coverImage: coverImagePath,
+            role
 
         })
         await newUser.save()
@@ -82,7 +83,6 @@ const loginUser = async (req, res) => {
     //get user entered data
     try {
         const { username, email, password } = req.body
-        console.log(password)
 
         //check fields
         if (!(username || email)) {
@@ -96,7 +96,6 @@ const loginUser = async (req, res) => {
         const user = await User.findOne({
             $or: [{ username }, { email }]
         })
-
 
         if (!user) {
             return res.status(401).json({
@@ -115,6 +114,7 @@ const loginUser = async (req, res) => {
                 error: error.message
             })
         }
+
 
         //generate token
         const token = jwt.sign(
@@ -252,7 +252,7 @@ const SendOTP = async (req, res) => {
                 return res.status(200).json({
                     status: "success",
                     message: "OTP send Successfully",
-                    otp: user.userOtp
+                    userOtp
                 })
 
             } else {
@@ -287,21 +287,17 @@ const verifyOTP = async (req, res) => {
     //new password bn jaega to agar login krega  to nrew token apneaap generate ho hijaega
 
 
-    const { otp, new_password } = req.body
+    const { email, OTP, new_password } = req.body
 
-    const user = await User.findOne({ otp })
-    console.log(otp, "purana")
-    const password = user.password
+    const user = await User.findOne({ email })
+
 
     try {
-        if (otp === user.otp) {
+        if (OTP === user.otp) {
             await User.findOneAndUpdate(
-                { otp },
+                { email },
                 {
-                    otp: null
-                },
-                {
-                    password: new_password
+                    $set: { otp: null, password: new_password }
                 },
                 {
                     new: true
@@ -309,12 +305,30 @@ const verifyOTP = async (req, res) => {
             )
         }
 
-        console.log(user.otp, "new")
+        const hashedPassword = await bcrypt.hash(user.password, 10)
+
+
+        const nUser = await User.findOneAndUpdate(
+            { email },
+            {
+                $set: {
+                    password: hashedPassword
+                }
+            },
+            {
+                new: true
+            }
+
+        ).select(
+            "-password"
+        )
+
         return res
             .status(200)
             .json({
                 status: 'success',
-                message: "Passowrd changed successfully",
+                message: "Password changed successfully",
+                nUser
             })
 
 

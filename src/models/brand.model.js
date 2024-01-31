@@ -7,6 +7,9 @@ const brandSchema = new mongoose.Schema(
         brandName: {
             type: String,
 
+        },
+        description: {
+            type: String
         }
     },
     {

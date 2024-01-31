@@ -87,15 +87,17 @@ const updateUser = async (req, res) => {
 
 const updateProfilePicture = async (req, res) => {
     try {
+        console.log("hello")
+        const { _id } = req.params
 
-        const { id } = req.params
 
         const userImage = req.files?.avatar[0]?.path
-        console.log(req.files, "94")//Harry
 
         const user = await User.findByIdAndUpdate(
-            id,
-            userImage,
+            _id,
+            {
+                $set: { avatar: userImage }
+            },
             { new: true }
         );
 
