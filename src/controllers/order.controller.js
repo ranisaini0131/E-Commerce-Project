@@ -5,15 +5,15 @@ import { Order } from "../models/order.model.js"
 //M
 const createOrder = async (req, res) => {
     try {
+        // get user id via jwt token
+        const { orderItems } = req.body
 
-        const { orderItem, totalAmount } = req.body
-
-        if (!(orderItem || totalAmount)) {
+        if (!Array.isArray(orderItems) || !orderItems.length) {
             return res
-                .status(500)
+                .status(400)
                 .json({
-                    status: "failed",
-                    message: "provide all required details."
+                    status: false,
+                    message: "Please provide orderItems!"
                 })
         }
 

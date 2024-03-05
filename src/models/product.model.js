@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema(
         },
         image: {
             type: String,
-            // required: true
+            required: true
         },
         category: {
             type: mongoose.Schema.Types.ObjectId,
@@ -42,7 +42,13 @@ const productSchema = new mongoose.Schema(
         stock: {
             type: Number,
             default: 0
-        }
+        },
+        shipping: {
+            type: String,
+            required: true,
+            enum: ["pending", "delivered"],
+            default: 'pending'
+        },
     },
     {
         timestamps: true

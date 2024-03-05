@@ -17,15 +17,14 @@ export const verifyJWT = async (req, res, next) => {
 
         const decodedTokenInfo = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
 
-        const user = await User.findById(decodedTokenInfo._user._id).select(
+        const user = await User.findById(decodedTokenInfo.user._id).select(
             " -refreshToken"
         )
-
 
         if (!user) {
             res.status(404).json({
                 status: "failed",
-                message: "Invslid Access Token"
+                message: "Invalid Access Token"
             })
         }
 
@@ -37,7 +36,7 @@ export const verifyJWT = async (req, res, next) => {
         res.status(401).json({
             status: "failed",
             error: error?.message,
-            message: "Invalid Access Token",
+            message: "Invalid Access Tokening",
         })
     }
 }

@@ -1,11 +1,10 @@
 import { Product } from "../models/product.model.js";
-import { Category } from "../models/category.model.js"
 
 const createProduct = async (req, res) => {
     try {
-        const { name, description, price } = req.body
+        const { name, description, price, image } = req.body
 
-        if (!(name || description || price)) {
+        if (!(name && description && price && image)) {
             return res.status(400).json({
                 status: "failed",
                 message: "Please provide all fields",
@@ -41,11 +40,6 @@ const createProduct = async (req, res) => {
                 message: error.message
             })
     }
-
-    // console.log(req.body, req.user, "102");
-    //         let data = { ...req.body, userId: req.user._id }
-    //         const add = new Address(data);
-    //         await add.save()//Address me save
 }
 
 const getProductById = async (req, res) => {
@@ -96,47 +90,32 @@ const getAllProducts = async (req, res) => {
     }
 }
 
-//M
+
 const filteredProducts = async (req, res) => {
     try {
+        const { checked, radio } = req.body;
 
+        let args = {};
+        if (checked.length > 0) args.category = checked;
+        if (radio.length) args.price = { $gte: radio[0], $lte: radio[1] };
 
-        console.log(req.params, "77")
-
-        const sortOptions = req.query.sort ? { [req.query.sort]: req.query.order === 'desc' ? -1 : 1 } : {};
-
-        const filteredProducts = await Product.find(
-            {
-                $or: [
-                    { name: { $regex: req.params.key } },
-                    { title: { $regex: req.params.key } },
-                    { price: { $regex: req.params.key } },
-                    { category: { $regex: req.params.key } },
-                    { brand: { $regex: req.params.key } },
-                ]
-            }
-        )
-            .sort(sortOptions)
-            .limit(req.query.limit ? parseInt(req.query.limit) : 0) // Limit the number of results
-            .skip((req.query.page ? parseInt(req.query.page) : 1) - 1) // Skip records for pagination
-            .exec();
-
-
+        const products = await Product.find(args);
         return res
             .status(200)
             .json({
                 status: "success",
-                filteredProducts
+                products
             })
 
 
 
     } catch (error) {
+        console.log(error)
         return res
-            .status(500)
+            .status(400)
             .json({
-                status: "failed",
-                mssage: "product not found"
+                mssage: "product not found",
+                error
             })
     }
 }

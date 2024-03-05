@@ -1,29 +1,47 @@
 import { Category } from "../models/category.model.js"
+import slugify from "slugify"
 
 const createCategory = async (req, res) => {
     try {
+        console.log("Hello Rani")
+        const { name } = req.body;
+        if (!name) {
 
-        const category = new Category(req.body)
-        await category.save()
+            return res
+                .status(401)
+                .json({
+                    message: "provide the name of category!!!"
+                })
+        }
 
-        return res
-            .status(200)
-            .json({
-                status: "success",
-                category: category
+        const existingCategory = await Category.findOne({ name })
+
+        if (existingCategory) {
+
+            return res
+                .status(200)
+                .json({
+                    error: 'Category already exists'
+                })
+        } else {
+            const category = new Category({
+                name,
+                slug: slugify(name)
             })
+
+            await category.save()
+
+            return res
+                .status(200)
+                .json({
+                    status: "success",
+                    category: category
+                })
+        }
     } catch (error) {
-
-        return res
-            .status(400)
-            .json({
-                status: "failed",
-                message: error.message,
-
-            })
+        console.log(error)
     }
 }
-
 const getCategoryById = async (req, res) => {
     try {
         const { id } = req.params

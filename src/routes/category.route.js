@@ -1,13 +1,14 @@
 import { Router } from "express";
-import { createCategory, getCategoryById, getAllCategories, updateCategory, deleteCategory } from "../controllers/category.controller.js";
-
+import { verifyJWT } from "../middlewares/verifyUser.middleware.js"
+import { isAdmin } from "../middlewares/isAdmin.middleware.js"
+import { createCategory, getCategoryById, getAllCategories, updateCategory, deleteCategory } from "../controllers/category.controller.js"
 const route = Router()
 
-route.post("/createCategory", createCategory)
-route.get("/getCategoryById/:id", getCategoryById)
-route.get("/getAllCategories/:id", getAllCategories)
-route.patch("/updateCategory/:id", updateCategory)
-route.delete("/deletedCategory/:id", deleteCategory)
+route.post("/createCategory", verifyJWT, isAdmin, createCategory)
+route.get("/getCategoryById/:id", verifyJWT, isAdmin, getCategoryById)
+route.get("/getAllCategories/:id", verifyJWT, isAdmin, getAllCategories)
+route.patch("/updateCategory/:id", verifyJWT, isAdmin, updateCategory)
+route.delete("/deletedCategory/:id", verifyJWT, isAdmin, deleteCategory)
 
 
 
