@@ -1,15 +1,29 @@
 const addItemToCart = async (req, res) => {
-    // try {
-    //     const cart = new Cart(req.body)
-    //     await cart.save()
-    //     res.send({
-    //         status: "success",
-    //         message: cart
-    //     })
+  try {
+    const { quantity, productId } = req.body;
+    const userId = req.user._id; // Replace 'req.user._id' with actual user ID from request
 
-    // } catch (error) {
-    //     console.log(error)
-    // }
+    // Check if product already exists in cart
+    const existingCart = await Cart.findOne({ user: userId, product: productId });
+
+    if (existingCart) {
+      // Update quantity of existing cart item
+      existingCart.quantity += quantity;
+      await existingCart.save();
+    } else {
+      // Create new cart item
+      const newCartItem = new Cart({
+        quantity,
+        product: productId,
+        user: userId
+      });
+      await newCartItem.save();
+    }
+
+    res.status(200).json({ success: true, message: 'Product added to cart successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 }
 
 const getItemById = async (req, res) => {
