@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
 
         fullName: {
             type: String,
-            required: [true, 'Please provide name'],
+            // required: [true, 'Please provide name'],
             lowerCase: true,
             unique: true,
             trim: true,
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema(
 
         username: {
             type: String,
-            required: [true, 'Please provide name'],
+            required: [true, 'Please provide username'],
             lowerCase: true,
             unique: true,
             trim: true,
@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema(
 
         avatar: {
             type: String,
-            required: true
+            // required: true
         },
 
         coverImage: {

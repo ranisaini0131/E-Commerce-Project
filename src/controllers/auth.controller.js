@@ -9,10 +9,10 @@ const registerUser = async (req, res) => {
     try {
 
         //get user details from frontend
-        const { fullName, username, email, password, role } = req.body
+        const { username, email, password, role } = req.body
 
         //validation
-        if (!(fullName || username || email || password || role)) {
+        if (!(username || email || password || role)) {
             return res.status(400).json({
                 status: "failed",
                 message: "Please provide all fields",
@@ -43,7 +43,7 @@ const registerUser = async (req, res) => {
         //create new user
 
         const newUser = new User({
-            fullName,
+            // fullName,
             username,
             email,
             password: hashedPassword,
@@ -70,7 +70,7 @@ const registerUser = async (req, res) => {
         //return response
         return res.json({
             status: "success",
-            msg: "User Registered successfully",
+            message: "User Registered successfully",
             createdUser
         })
     } catch (error) {

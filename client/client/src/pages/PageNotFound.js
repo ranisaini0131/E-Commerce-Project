@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import Layout from '../components/Layout/Layout.js'
-import { MdFoundation } from 'react-icons/md'
 
 export default function PageNotFound() {
     return (
