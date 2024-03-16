@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
-import Layout from '../../components/Layout/Layout.js'
+import Layout from '../../components/Layout/Layout.jsx'
 import { toast } from "react-toastify"
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+// const REACT_APP_API= "http://localhost:5000"
 
 export default function Register() {
 
@@ -15,10 +16,10 @@ export default function Register() {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const res = axios.post("/api/v1/users/register", { username, email, password })
+            const res = await axios.post("http://localhost:5000/api/v1/users/register", { username, email, password, OTP })
             console.log(res)
 
-            if (res.data.success) {
+            if (res.data.status === "success") {
                 toast.success(res.data.message)
                 navigate("/login");
             } else {
@@ -31,7 +32,6 @@ export default function Register() {
 
         }
     }
-
     return (
 
         <Layout title={"Register - E-commerce App"}>
@@ -77,7 +77,10 @@ export default function Register() {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn btn-primary">
+                    <button
+                        type="submit"
+                        className="btn btn-primary"
+                    >
                         Submit
                     </button>
                 </form>

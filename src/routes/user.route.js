@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { uploads } from "../middlewares/multer.middleware.js";
-import { SendOTP, changePassword, loginUser, logoutUser, registerUser, verifyOTP } from "../controllers/auth.controller.js";
+import { changePassword, forgetPassword, loginUser, logoutUser, registerUser, verifyOTP } from "../controllers/auth.controller.js";
 import { verifyJWT } from "../middlewares/verifyUser.middleware.js";
 import { isAdmin } from "../middlewares/isAdmin.middleware.js"
 import { getAllUser, getUserById, updateProfilePicture, updateUser } from "../controllers/user.controller.js";
@@ -21,7 +21,7 @@ router.post('/register',
     registerUser)
 
 router.post("/login", loginUser)
-router.post("/sendOtp", SendOTP)
+router.post("/forget-password", forgetPassword)
 router.post("/verifyOTP", verifyOTP)
 
 
@@ -44,6 +44,10 @@ router.patch("/updateProfilePicture/:_id",
         }
     ]),
     updateProfilePicture) //verifyJWT, lgana h
+
+router.get("/user-auth", verifyJWT, (req, res) => {
+    res.status(200).json({ ok: true });
+})
 
 
 export default router;

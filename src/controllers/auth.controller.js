@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js"
-import nodemailer from "nodemailer"
+import { sendMail } from "../utils/nodemailer.js"
 
 
 
@@ -81,6 +81,7 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
     //get user entered data
+    console.log(req.body)
     try {
         const { username, email, password } = req.body
 
@@ -195,10 +196,11 @@ const logoutUser = async (req, res) => {
     }
 }
 
-
-const SendOTP = async (req, res) => {
+//forgot password
+const forgetPassword = async (req, res) => {
     try {
         const { username, email } = req.body
+
 
         if (username || email) {
 
@@ -208,51 +210,34 @@ const SendOTP = async (req, res) => {
 
             if (existUser) {
 
+                //generate OTP
                 const generateOTP = () => {
                     return Math.floor(1000 + Math.random() * 9000).toString()
                 }
                 existUser.otp = generateOTP()
                 const userOtp = existUser.otp
-                console.log(userOtp, "122")
+                console.log(userOtp)
 
+                //save into user model
                 const user = await User.findOneAndUpdate({ username }, { $set: { otp: userOtp } }, { new: true })
+                console.log(user, "223")
 
-                //nodemailer config
-                let config = {
-                    service: "gmail",
-                    auth: {
-                        user: process.env.EMAIL,
-                        pass: process.env.PASSWORD
-                    }
-                }
-
-                let transporter = nodemailer.createTransport(config);
-
-                let mailOptions = {
-                    from: process.env.EMAIL,
-                    to: email,
-                    subject: "OTP TO RESET PASSWORD",
-                    text: `Your OTP is: ${userOtp}`
-                }
-
+                //config sendMail args
+                const subject = "Ecommerce App OTP"
+                const html = `Your One Time Password is ${userOtp}`
 
                 // /this method send email
-                transporter.sendMail(mailOptions, (error, info) => {
-                    if (!error) {
-                        res.status(200).json({
-                            message: 'Email has been sent',
-                            info: info.messageId,
-                            preview: nodemailer.getTestMessageUrl(info)
-                        })
-                        console.log(info.response, "258")
-                    } else {
-                        console.log('Error occurred', error);
-                    }
-                })
+                const response = await sendMail({
+                    to: email,
+                    subject,
+                    html
+                });
+
+
                 return res.status(200).json({
                     status: "success",
-                    message: "OTP send Successfully",
-                    userOtp
+                    message: `OTP send Successfully to ${existUser.email}`,
+
                 })
 
             } else {
@@ -275,11 +260,14 @@ const SendOTP = async (req, res) => {
 
     } catch (error) {
         console.log("ERROR: ", error)
+        User.otp = undefined,
+            User.otpExpire = undefined
     }
 
 
 }
 
+//hit on verify Button
 const verifyOTP = async (req, res) => {
 
     //verifyandChange Password
@@ -392,7 +380,7 @@ export {
     registerUser,
     loginUser,
     logoutUser,
-    SendOTP,
+    forgetPassword,
     verifyOTP,
     changePassword
 }

@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from './Header.js'
-import Footer from './Footer.js'
+import Header from './Header.jsx'
+import Footer from './Footer.jsx'
 import { Helmet } from 'react-helmet'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

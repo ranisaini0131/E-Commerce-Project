@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Layout from '../components/Layout/Layout.js'
+import Layout from '../components/Layout/Layout.jsx'
 
 export default function PageNotFound() {
     return (

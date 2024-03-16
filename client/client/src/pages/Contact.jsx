@@ -1,5 +1,5 @@
 import React from 'react'
-import Layout from '../components/Layout/Layout.js'
+import Layout from '../components/Layout/Layout.jsx'
 import { IoMailUnreadSharp } from "react-icons/io5";
 import { FaPhoneVolume } from 'react-icons/fa';
 import { MdContactSupport } from 'react-icons/md'

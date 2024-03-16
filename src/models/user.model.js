@@ -5,20 +5,19 @@ const userSchema = new mongoose.Schema(
 
     {
 
-        fullName: {
-            type: String,
-            // required: [true, 'Please provide name'],
-            lowerCase: true,
-            unique: true,
-            trim: true,
+        // fullName: {
+        //     type: String,
+        //     // required: [true, 'Please provide name'],
+        //     lowerCase: true,
+        //     trim: true,
 
-        },
+        // },
 
         username: {
             type: String,
             required: [true, 'Please provide username'],
             lowerCase: true,
-            unique: true,
+            // unique: true,
             trim: true,
             index: true
 
@@ -59,13 +58,16 @@ const userSchema = new mongoose.Schema(
 
         otp: {
             type: Number
-        }
+        },
+
+        otpExpire: Date
     },
     {
         timestamps: true
     }
 )
 
-
+userSchema.method.otpExpire = Date.now() + 2 * 60 * 1000; //2 min expiration time
 
 export const User = mongoose.model("User", userSchema)
+
