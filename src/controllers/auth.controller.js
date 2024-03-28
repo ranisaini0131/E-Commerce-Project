@@ -273,25 +273,49 @@ const verifyOTP = async (req, res) => {
     //verifyandChange Password
     //otp dene k baad verify krk loginkrwana h
     //new password bn jaega to agar login krega  to nrew token apneaap generate ho hijaega
+    //navigate to reset
 
+    const { current_otp } = req.body
 
-    const { email, OTP, new_password } = req.body
-
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ current_otp })
+    console.log(user, "281")
 
 
     try {
-        if (OTP === user.otp) {
+        if (current_otp === user.otp) {
             await User.findOneAndUpdate(
                 { email },
                 {
-                    $set: { otp: null, password: new_password }
+                    $set: { otp: null }
                 },
                 {
                     new: true
                 }
             )
         }
+
+        return res
+            .status(200)
+            .json({
+                status: 'success',
+                message: "OTP Verified",
+            })
+
+
+
+    } catch (error) {
+        return res
+            .status(200)
+            .json({
+                status: 'failed',
+                message: error.message
+            })
+    }
+}
+
+const resetPassword = async (req, res) => {
+    try {
+        const { password } = req.body;
 
         const hashedPassword = await bcrypt.hash(user.password, 10)
 
@@ -319,17 +343,11 @@ const verifyOTP = async (req, res) => {
                 nUser
             })
 
-
     } catch (error) {
-        return res
-            .status(200)
-            .json({
-                status: 'failed',
-                message: error.message
-            })
-    }
-}
 
+    }
+
+}
 
 const changePassword = async (req, res) => {
     try {
@@ -382,6 +400,7 @@ export {
     logoutUser,
     forgetPassword,
     verifyOTP,
+    resetPassword,
     changePassword
 }
 
