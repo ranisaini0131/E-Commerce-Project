@@ -16,7 +16,6 @@ const productSchema = new mongoose.Schema(
         },
         image: {
             type: String,
-            required: true
         },
         category: {
             type: mongoose.Schema.Types.ObjectId,
@@ -39,8 +38,9 @@ const productSchema = new mongoose.Schema(
             required: [true, "Please provide product price"],
             default: 0
         },
-        stock: {
+        quantity: {
             type: Number,
+            require: true,
             default: 0
         },
         shipping: {

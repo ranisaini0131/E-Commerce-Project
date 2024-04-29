@@ -29,7 +29,7 @@ const createOrder = async (req, res) => {
         }
 
         const newOrder = new Order({
-            orderItem,
+            orderItems,
             totalAmount,
         }).populate("user").populate("product").exec()
 

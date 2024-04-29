@@ -2,12 +2,14 @@ import { Product } from "../models/product.model.js";
 
 const createProduct = async (req, res) => {
     try {
-        const { name, description, price, image } = req.body
+        const { name, description, price, category, quantity } = req.body;
 
-        if (!(name && description && price && image)) {
-            return res.status(400).json({
+
+
+        if (!(name && description && price && category && quantity)) {
+            return res.status(500).json({
                 status: "failed",
-                message: "Please provide all fields",
+                message: "Please provide all required information",
             })
         }
 
@@ -26,9 +28,10 @@ const createProduct = async (req, res) => {
         await newProduct.save()
 
         return res
-            .status(200)
+            .status(201)
             .json({
-                status: "success",
+                status: "failed",
+                message: "Product created Successfully",
                 data: newProduct
             })
 
@@ -42,17 +45,22 @@ const createProduct = async (req, res) => {
     }
 }
 
-const getProductById = async (req, res) => {
+const getSingleProduct = async (req, res) => {
     try {
         const { id } = req.params
+        console.log(req.params, "52")
 
-        const product = await Product.findById(id);
+        const product = await Product.findById(id)
+        // .populate("category")
+
+
+        console.log(product, "54")
 
         return res
             .status(200)
             .json({
                 status: "success",
-                product: product
+                product
             })
 
     } catch (error) {
@@ -68,7 +76,7 @@ const getProductById = async (req, res) => {
 const getAllProducts = async (req, res) => {
     try {
 
-        const allProducts = await Product.find();
+        const allProducts = await Product.find({}).populate("category")
 
 
 
@@ -123,7 +131,7 @@ const filteredProducts = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { id } = req.query
+        const { id } = req.params
 
         const product = await Product.findByIdAndUpdate(id, req.body, { new: true })
 
@@ -174,7 +182,7 @@ const deleteProductById = async (req, res) => {
 export {
     createProduct,
     getAllProducts,
-    getProductById,
+    getSingleProduct,
     updateProduct,
     deleteProductById,
     filteredProducts
